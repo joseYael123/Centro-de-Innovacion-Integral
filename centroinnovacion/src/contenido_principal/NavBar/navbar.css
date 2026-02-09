@@ -1,0 +1,140 @@
+.links-nav {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.imgen {
+    flex-shrink: 0;
+    object-fit: cover;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 10; 
+}
+
+.navText {   
+    gap: 10px;
+    font-size: x-large;
+    font-weight: bold;
+    background-image: linear-gradient(to right, white 50%, #9E9D96, #C9C8C4);
+    background-size: 200% 100%;
+    background-position: 0% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: background-position 0.5s ease-out;
+}
+
+.navText:hover {
+    background-position: 100% 100%;
+}
+
+.logo-container {
+    position: relative; 
+    display: flex;
+    align-items: center;
+    z-index: 5;
+    cursor: pointer;
+}
+
+.logo-container:hover .imgen {
+    transform: translateX(-15px) scale(1.05); 
+}
+
+.text-container {
+    position: absolute;
+    left: 85%; 
+    top: 50%;
+    opacity: 0;    
+    overflow: hidden; 
+    max-width: 0px;
+    transform: translateY(-50%) translateX(-20px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    z-index: -1; 
+    display: flex;
+    align-items: center;
+}
+
+.text-container.visible {
+    opacity: 1;
+    max-width: 300px; 
+    transform: translateY(-50%) translateX(0px); 
+}
+
+.texto-animado {
+    width: 260px;
+    white-space: normal;
+    line-height: 1.1;
+    font-size: 1.5rem;
+    display: block;
+    padding-left: 15px;
+    text-align: left;
+    align-self: center;
+    font-weight: 800;
+    letter-spacing: -0.5px; 
+}
+
+.navbar{
+    position: relative;
+    z-index: 100;
+    background-color: rgb(0,139,79); 
+}
+
+@media (max-width: 576px) {
+    .navbar {
+        display: flex;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        height: auto !important;
+        padding: 10px 0;
+        position: relative;
+        z-index: 100;
+        background-color: rgb(0,139,79); 
+    }
+
+    .logo-container {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .text-container, .text-container.visible {
+        display: flex !important;
+        opacity: 1 !important;
+    }
+
+    .text-container {
+        left: 55%; 
+        transform: translateY(-50%) translateX(0);
+    }
+
+    .text-container.visible {
+        max-width: 160px !important;
+    }
+
+    .texto-animado {
+        font-size: 0.9rem !important; 
+        width: 150px !important;      
+        padding-left: 10px !important;
+        line-height: 1.1 !important;
+    }
+
+    .links-nav {
+        margin: 5px !important;
+        display: inline-block;
+        font-size: 0.9rem;
+    }
+
+    .imgen {
+        flex-shrink: 0;
+        object-fit: cover;
+        position: relative;
+        z-index: 10; 
+        transform: translateX(-30px); 
+    }
+    
+    .logo-container:hover .imgen {
+        transform: translateX(-35px) scale(1.05); 
+    }
+}

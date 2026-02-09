@@ -1,0 +1,34 @@
+/* 1. Estilo base para TEXTO (Mantenemos tu efecto original) */
+.navText {
+    font-weight: bold;
+    /* El degradado original */
+    background-image: linear-gradient(to right, white 50%, #9E9D96, #C9C8C4);
+    background-size: 200% 100%;
+    background-position: 0% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: background-position 0.5s ease-out;
+    cursor: pointer;
+    text-decoration: none; /* Quita subrayado si es un link */
+}
+
+.navText:hover {
+    background-position: 100% 100%;
+}
+
+/* 2. EXCEPCIÓN PARA ICONOS (SVG) */
+/* Esto sobreescribe la regla anterior SOLO si el elemento es un SVG */
+svg.navText {
+    background: none !important; /* Quitamos el fondo degradado */
+    -webkit-background-clip: border-box !important; /* Quitamos el recorte */
+    background-clip: border-box !important;
+    color: white !important; /* Color base blanco */
+    transition: transform 0.3s ease, color 0.3s ease !important; /* Nueva animación */
+}
+
+/* Efecto Hover para los iconos: Crecen y cambian a tu color marca */
+svg.navText:hover {
+    transform: translateY(-3px) scale(1.1); /* Se levanta y crece un poco */
+    color: #34baae !important; /* Cambia al color 'teal' de tu marca */
+}

@@ -1,0 +1,18 @@
+.input-verde:focus {
+    border-color: #0b6a64 !important;     
+    box-shadow: 0 0 0 0.25rem rgba(11, 106, 100, 0.25) !important;
+    outline: 0 !important;
+}
+
+@media (max-width: 576px) {
+
+    .contCont{
+        width: 100% !important;
+    }
+
+    .contCont form{
+        width: 100% !important;
+        padding: 1.5rem !important;
+    }
+
+}
