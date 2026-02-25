@@ -6,7 +6,7 @@ function ExportPrin(){
     return(
         <>
             <NavBar/>
-        <div className='d-flex flex-column min-vh-100 min-vw-100'>
+        <div className='d-flex flex-column min-vh-100 w-100'>
             <main className='d-flex flex-grow-1 w-100'>
                 <Outlet/>
             </main>

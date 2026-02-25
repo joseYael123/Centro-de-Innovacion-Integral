@@ -1,51 +1,36 @@
-import { Container, Row, Col, Carousel, Image} from 'react-bootstrap';
+import React from 'react';
+import { Carousel } from 'react-bootstrap';
 import imagenes from '../../img/imagenes';
 
-function Carrusel({style
-}){
-return(
-<div className='carrusel-fixed' style={style}>
-<Container fluid className='p-0 m-0 carrusel-container'>
-    <Row className='g-0'> 
-        <Col xs={12}> 
-            <Carousel controls={false} indicators={false}>
-                <Carousel.Item interval={3500} style={{ height: '600px' }}>
-                    <Image
-                    src={imagenes[0]}
-                    className="d-block w-100"
-                    style={{ height: '100%', width: '100%'}}
-                    />
-                <Carousel.Caption>
-                    <h3 className='fw-bold'>El logo del centro de innovacion</h3>
-                </Carousel.Caption>
-                </Carousel.Item>
-                <Carousel.Item interval={3500} style={{ height: '600px',objectFit: "cover" }}>
-                    <Image
-                    src={imagenes[1]}
-                    className="d-block w-100"
-                    style={{ height: '100%', width: '100%', objectFit: "cover"}}
-                    />
-                <Carousel.Caption>
-                <h3 className='fw-bold'>Actividades del centro de innovacion</h3>
-                </Carousel.Caption>
-                </Carousel.Item>
-                <Carousel.Item interval={3500} style={{ height: '600px' }}>
-                    <Image
-                    src={imagenes[2]}
-                    className="d-block w-100"
-                    style={{ height: '100%', width: '100%',objectFit: "cover"}}
-                    />
-                <Carousel.Caption>
-                    <h3 className='fw-bold'>Estas Interesado?</h3>
-                    </Carousel.Caption>
-                </Carousel.Item>
-            </Carousel>
-        </Col>                    
-    </Row>
-</Container>
-</div>
-);
+const imaganesLi = [
+    {imagen: imagenes.img1},
+    {imagen: imagenes.img2},
+    {imagen: imagenes.img3},
+    {imagen: imagenes.img4},
+    {imagen: imagenes.img5},
+];
 
+function Carrusel({ style }) {
+    return (
+        <div className='carrusel-fixed' style={style}>
+            <Carousel controls={true} indicators={false}>
+                {imaganesLi.map((img, ind) => (
+                    <Carousel.Item 
+                        key={ind} 
+                        interval={3000} 
+                        style={{ width: "100%", height: "550px", backgroundColor: "#000" }}
+                    >
+                        <img 
+                            src={img.imagen}
+                            className='d-block w-100'
+                            style={{ height: "100%", objectFit: "fill" }}
+                            alt={`Slide ${ind + 1}`}
+                        />
+                    </Carousel.Item>
+                ))}
+            </Carousel>
+        </div>
+    );
 }
 
-export default Carrusel;
+export default React.memo(Carrusel);

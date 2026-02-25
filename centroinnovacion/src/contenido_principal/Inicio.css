@@ -19,7 +19,7 @@
     background: linear-gradient(to right, rgb(0,103,79), rgb(80,200,100));
 }
 
-.contVideo{
+.contCarrusel {
     position: relative;
     z-index: 1;
     width: 100%;
@@ -27,18 +27,18 @@
     overflow: hidden;
 }
 
-.video-fixed{
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  will-change: transform, opacity;
-  background-color: black;
+.contCarrusel .carousel,
+.contCarrusel .carousel-inner,
+.contCarrusel .carousel-item {
+    height: 100%;
+    width: 100%;
 }
 
-.video-fixed video{
+.contCarrusel img {
     width: 100%;
     height: 100%;
-    object-fit: fill;
+    object-fit: cover;
+    object-position: center;
 }
 
 .icon-wrapper {
@@ -78,16 +78,8 @@
         margin-bottom: 5px;
     }
 
-    .contVideo{
+    .contCarrusel {
         height: 400px !important;
-    }
-
-    .video-fixed{
-        height: 100% !important;
-    }
-
-    .video-fixed video{
-        height: 100% !important;
     }
 
     .text-container, .text-container.visible {
@@ -103,5 +95,5 @@
     .contenido-principal {
         margin-top: 0 !important;
         padding-top: 0 !important; 
-    }
+    } 
 }
