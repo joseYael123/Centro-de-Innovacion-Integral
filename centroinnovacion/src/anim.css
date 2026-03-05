@@ -1,0 +1,34 @@
+.circle{
+    position:fixed;
+    top:0;
+    right:0;
+    width:0;
+    height:0;
+    background:#41d2b8;
+    border-radius:50%;
+    transform:translate(50%,-50%);
+    pointer-events:none;
+    z-index:3000;
+}
+
+.circle.animate{
+    animation:circleExpand 1.2s ease forwards;
+}
+
+@keyframes circleExpand{
+    0%{
+        width:0;
+        height:0;
+        transform:translate(50%,-50%);
+    }
+    60%{
+        width:250vmax;
+        height:250vmax;
+        transform:translate(50%,-50%);
+    }
+    100%{
+        width:0;
+        height:0;
+        transform:translate(-150%,150%);
+    }
+}

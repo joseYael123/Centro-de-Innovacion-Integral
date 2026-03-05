@@ -17,6 +17,10 @@ function NavBar() {
         timer.current = setTimeout(() => setFocus(false), 300);
     };
 
+    const handleAnim = () =>{
+        
+    }
+
     const degradadoMarca = {
         background: "linear-gradient(to left, #0d8476, #72c8c1,#72c8c1,#f2f2f2)",
         width: "100%"
@@ -58,8 +62,8 @@ function NavBar() {
                             </Link>
                         </div>
                         <div className="links-nav">
-                            <Link to='en-construccion' className="text-decoration-none text-nowrap"> 
-                                <span className="navText">Diagnostico</span> 
+                            <Link to='diagnostico' className="text-decoration-none text-nowrap"> 
+                                <span className="navText">Diagnóstico</span> 
                             </Link>
                         </div>
                         <div className="links-nav">
@@ -73,13 +77,12 @@ function NavBar() {
                             </Link>
                         </div>
                         <div className="links-nav">
-                            <Link to='en-construccion' className="text-decoration-none"> 
+                            <Link to='blog' className="text-decoration-none"> 
                                 <span className="navText">Blog</span> 
                             </Link>
                         </div>
                     </Nav>
                 </Navbar.Collapse>
-
             </Container>
          </Navbar>
         </>

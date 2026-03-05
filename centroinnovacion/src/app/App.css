@@ -56,16 +56,13 @@
   z-index: 9999;
 }
 
-.spinner-ciin{
-  width: 80px;
-  height: 80px;
-  border: 6px solid #e0e0e0;
-  border-top: 6px solid #095757;
-  border-radius: 100%;
-  animation: girar 1s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
+.logoGirando {
+  width: 90px;  
+  height: 90px;
+  border-radius: 50%; 
+  object-fit: cover;
   margin-bottom: 20px;
 }
-
 .texto-carga {
   color: #095757;
   font-weight: bold;

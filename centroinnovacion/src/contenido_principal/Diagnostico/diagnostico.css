@@ -1,0 +1,20 @@
+.animacionFondo{
+    position: absolute !important;
+    width: var(--dim) !important;
+    height: var(--dim) !important;
+    background:rgba(0,150,100,0.4);
+    border-radius:50%;
+    left:var(--posX);
+    bottom:-10px;
+    animation:flotar var(--dur) linear infinite;
+    animation-delay:var(--delay);
+    z-index: -100;
+}
+
+
+@keyframes flotar {
+    to{
+        transform: translateY(-300vh);
+        opacity: -2;
+    }
+}

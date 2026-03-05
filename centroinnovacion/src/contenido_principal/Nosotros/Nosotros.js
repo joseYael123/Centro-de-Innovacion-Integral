@@ -10,15 +10,24 @@ function Nosotros(){
     const brandColor = "linear-gradient(to right, #095757, #0b6a64, #34baae";
 
     const listaLideres = [
-        {nombre:"Cosme Garcia Y Carol Solano", Area: "Jefatura" ,puesto:"Lider y fundador del CIIN, Team Lider", imagen: imagenesTodos.Jefatura},
+        {nombre:"Cosme Garcia", Area: "Liderazgo" ,puesto:"Lider y fundador del CIIN", imagen: imagenesTodos.Cosme},
+        {nombre:"Carol Solano", Area: "Liderazgo" ,puesto:"Lider del equipo innovador de CIIN", imagen: imagenesTodos.Carol},
     ];
 
-    const listaEquipo = [
-        {nombre:"Amanda,Nahomi y Diego", Area:"Administracion", puesto:"Miembros del area administrativa", imagen: imagenesTodos.AreaAdministrativa},
-        {nombre:"Yael y Alexis", Area:"Ingenieria e Innovacion", puesto:"Miembros del area de ingenieria", imagen: imagenesTodos.AreaIng},
-        {nombre:"Juan,Atai,Kitzia", Area:"Marketing", puesto:"Miembros del area de marketing", imagen: imagenesTodos.AreaMarketing}
-    ];
+        const listaEquipo = [
+            {nombre: "Amanda Rojo", Area: "Gestión y Estrategia Corporativa", puesto: "Líderes de Operaciones Administrativas", imagen: imagenesTodos.Amanda},
+            {nombre: "Nahomi Rico", Area: "Gestión y Estrategia Corporativa",  puesto: "Líderes de Operaciones Administrativas", imagen: imagenesTodos.Nahomi},
+            {nombre: "Diego", Area: "Gestión y Estrategia Corporativa",  puesto: "Líderes de Operaciones Administrativas", imagen: imagenesTodos.Diego},
 
+            {nombre: "Yael Gomez", Area: "Ingeniería e Innovación", puesto: "Desarrolladores de Soluciones Tecnológicas", imagen: imagenesTodos.Yael},
+            {nombre: "Alexis", Area: "Ingeniería e Innovación", puesto: "Desarrolladores de Soluciones Tecnológicas", imagen: imagenesTodos.Alexis},
+
+            {nombre: "Juan Pablo", Area: "Crecimiento y Posicionamiento de Marca", puesto: "Estrategas de Comunicación y Mercado", imagen: imagenesTodos.Juan},
+            {nombre: "Atai Contreras", Area: "Crecimiento y Posicionamiento de Marca", puesto: "Estrategas de Comunicación y Mercado", imagen: imagenesTodos.Atai},
+            {nombre: "Kitzia Martinez", Area: "Crecimiento y Posicionamiento de Marca", puesto: "Estrategas de Comunicación y Mercado", imagen: imagenesTodos.Kitzia}
+        ];
+
+        
     return(
         <Container fluid className='d-flex flex-column flex-grow-1 p-0'>   
             <Row className='d-flex w-100 m-0 flex-fill align-items-center flex-row position-relative'>
