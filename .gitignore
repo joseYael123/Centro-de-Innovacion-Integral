@@ -1,0 +1,10 @@
+/backCIIN/vendor/
+/centroinnovacion/node_modules/
+
+/backCIIN/.env
+.env
+
+/Demos/
+*.zip
+*.mp4
+*.rar

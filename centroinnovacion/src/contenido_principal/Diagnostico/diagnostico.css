@@ -1,20 +1,121 @@
-.animacionFondo{
-    position: absolute !important;
-    width: var(--dim) !important;
-    height: var(--dim) !important;
-    background:rgba(0,150,100,0.4);
-    border-radius:50%;
-    left:var(--posX);
-    bottom:-10px;
-    animation:flotar var(--dur) linear infinite;
-    animation-delay:var(--delay);
-    z-index: -100;
+:root {
+    /* Los verdes de la marca */
+    --verde-primario: #059669;    
+    --verde-claro: #34d399;       
+    --verde-acento: #10b981;      
+    
+    /* Fondo claro y textos legibles */
+    --color-fondo-claro: #f8fafc; 
+    --texto-oscuro: #0f172a;      
+    --texto-gris: #475569;        
 }
 
+.diagnostico-container {
+    background-color: var(--color-fondo-claro);
+}
+
+/* El formulario estilo cristal claro */
+.light-glass-form {
+    background: rgba(255, 255, 255, 0.7); 
+    backdrop-filter: blur(20px); 
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.9); 
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.04), 
+        0 0 0 1px rgba(16, 185, 129, 0.05); 
+}
+
+/* Estilos de Textos */
+.form-title {
+    color: var(--verde-primario);
+    letter-spacing: -0.5px;
+}
+
+.form-subtitle {
+    color: var(--texto-gris);
+}
+
+.light-label {
+    font-weight: 600;
+    color: var(--texto-oscuro);
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Inputs minimalistas */
+.light-input {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid #e2e8f0 !important;
+    color: var(--texto-oscuro) !important;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
+}
+
+.light-input::placeholder {
+    color: #94a3b8 !important;
+}
+
+.light-input:focus {
+    background: #ffffff !important;
+    border-color: var(--verde-primario) !important; 
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15) !important; 
+    outline: none;
+}
+
+/* Botón corporativo */
+.btn-verde-innovacion {
+    background: var(--verde-primario) !important;
+    border: none !important;
+    color: white;
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3) !important;
+    transition: all 0.3s ease-in-out !important;
+    letter-spacing: 0.5px;
+}
+
+.btn-verde-innovacion:hover {
+    transform: translateY(-2px);
+    background: var(--verde-acento) !important;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+.btn-verde-innovacion:active {
+    transform: translateY(1px);
+}
+
+/* =========================================
+   TU ANIMACIÓN ORIGINAL (Adaptada al fondo claro)
+   ========================================= */
+.animacionFondo {
+    position: absolute;
+    width: var(--dim);
+    height: var(--dim);
+    /* Las partículas ahora son verdes para que resalten en el fondo blanco */
+    background-color: var(--verde-claro);
+    box-shadow: 0 0 8px var(--verde-claro);
+    border-radius: 50%;
+    top: 100%;
+    left: var(--posX);
+    opacity: 0.6; /* Un poco transparentes para que no saturen la vista */
+    animation: flotar var(--dur) linear infinite;
+    animation-delay: var(--delay);
+    z-index: 0; /* Asegura que pasen por detrás del formulario */
+}
 
 @keyframes flotar {
-    to{
-        transform: translateY(-300vh);
-        opacity: -2;
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-200vh) scale(1.5);
+        opacity: 0;
     }
 }

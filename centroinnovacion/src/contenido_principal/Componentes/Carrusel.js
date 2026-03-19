@@ -8,6 +8,7 @@ const imaganesLi = [
     {imagen: imagenes.img3},
     {imagen: imagenes.img4},
     {imagen: imagenes.img5},
+    {imagen: imagenes.img6}
 ];
 
 function Carrusel({ style }) {
