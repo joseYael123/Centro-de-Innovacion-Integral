@@ -76,7 +76,7 @@ function Diagnostico() {
             
             setTimeout(() =>{
                 navegar('/');
-            },3000);
+            },4000);
 
         }catch(error){
             setCargando(false);

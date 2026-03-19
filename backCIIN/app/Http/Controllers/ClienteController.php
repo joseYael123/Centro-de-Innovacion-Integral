@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Services\GeminiService;
 use App\Mail\CorreoDiagnostico;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\CorreoJefe;
 
 class ClienteController extends Controller
 {
@@ -44,9 +45,18 @@ class ClienteController extends Controller
             $request->peticion_cliente
         );
 
+        if(is_array($diagnosticoIa)){
+            return response() ->json([
+                "msg" => "Error en la peticion a la ia",
+                "Error" => $diagnosticoIa
+            ], 400);
+        }
+
         Mail::to($request->correo_cliente)
-        ->bcc("gomram187@gmail.com")
         ->send(new CorreoDiagnostico($cliente_creado, $diagnosticoIa));
+
+        Mail::to("cosmegarcia@centrodeinnovacionintegral.com")
+        ->send(new CorreoJefe($cliente_creado));
 
         return response() -> json([
             "msg" => "Peticion del cliente recibida con exito",
@@ -70,9 +80,6 @@ class ClienteController extends Controller
      */
     public function update(Request $request, Cliente $cliente)
     {
-        $cliente_encontrar = Cliente::find($cliente);
-        if(!$cliente_encontrar) return response() -> json(["msg" => "No hay un cliente con ese id para actualizae"] , 404);   
-
         $validacion_basica = $request -> validate([
         "nom_cliente" => "string|max:100",
         "apellidos_cliente" => "string|max:100",
@@ -81,11 +88,11 @@ class ClienteController extends Controller
         "peticion_cliente" => "string|max:4500"
         ]);
 
-        $cliente_actu = Cliente::update($validacion_basica);
+        $cliente->update($validacion_basica);
 
         return response() -> json([
             "msg" => "Cliente actualizado correctamente",
-            "Data" => $cliente_actu
+            "Data" => $cliente
         ]);
     }
     

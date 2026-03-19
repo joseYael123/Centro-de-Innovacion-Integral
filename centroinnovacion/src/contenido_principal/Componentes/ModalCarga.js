@@ -10,21 +10,21 @@ function ModalCarga({esVisible, tipoCarga}){
     }
 
     return(
-        <Container className="taparVista">  
+        <div className="taparVista">  
             <div className="vistaPrin">
             {tipoCarga === "carga" ? (
             <>
                 <div className="animacion-carga"></div>
                 <h2 className="texto-carga">Subiendo su peticion por favor espere...</h2>
             </>
-            ): (
+            ):(
             <>
                 <FaCheck size={70} color="green"/>
                 <h2 className="texto-carga">Peticion subida correctamente</h2>
             </>
             )}
             </div>
-        </Container>
+        </div>
     )
 }
 

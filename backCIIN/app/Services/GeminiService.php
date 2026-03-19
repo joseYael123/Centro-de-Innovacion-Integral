@@ -44,7 +44,12 @@ class GeminiService
         ])-> post($url, $payload);
 
         if($respuesta-> successful()){
-            return $respuesta-> json("candidates.0.content.parts.0.text");
+           $texto = $respuesta->json("candidates.0.content.parts.0.text");
+                
+            if (!empty($texto) && is_string($texto)) {
+                return $texto;
+            }
+
         }
 
         return $respuesta->json();    
