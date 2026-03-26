@@ -5,9 +5,9 @@ import './footer.css';
 
 function Footer(){
 const footerStyle = {
-        background: "linear-gradient(to right, #0d8476, #72c8c1, #000e14, #f2f2f2)", // El mismo verde de tu Navbar
+        background: "linear-gradient(to right, #0d8476, #72c8c1, #000e14, #f2f2f2)", 
         color: "white",
-        marginTop: "auto" // Ayuda a que se vaya al fondo si hay poco contenido
+        marginTop: "auto" 
     };
 
     return (
@@ -40,7 +40,7 @@ const footerStyle = {
                         <div className="d-flex flex-column align-items-center align-items-md-end gap-2">
                             
                             <div className="d-flex align-items-center gap-2">
-                                <span>cosmegarcia@centrodeinnovacionintegral.com.mx</span>
+                                <span>cosmegarcia@centrodeinnovacionintegral.com</span>
                             </div>
 
                             <div className="d-flex align-items-center gap-2">

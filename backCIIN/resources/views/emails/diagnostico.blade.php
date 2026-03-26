@@ -123,7 +123,7 @@
 
                     <div class="footer">
                         <p>Este es un reporte automático generado por Inteligencia Artificial.</p>
-                        <p>&copy; 2026 CENTRO DE INNOVACIÓN DIGITAL®. Todos los derechos reservados.</p>
+                        <p>&copy; 2026 CENTRO DE INNOVACIÓN INTEGRAL®. Todos los derechos reservados.</p>
                     </div>
 
                 </div>

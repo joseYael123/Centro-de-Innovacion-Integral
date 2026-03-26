@@ -48,6 +48,7 @@
             font-size: 20px;
             color: #222222;
             margin-top: 0;
+            margin-bottom: 20px;
         }
 
         .tarjeta-contacto {
@@ -59,17 +60,30 @@
         }
 
         .tarjeta-contacto p {
-            margin: 5px 0;
+            margin: 8px 0; /* Un poco más de margen para que respiren los datos */
             font-size: 15px;
         }
 
-        .peticion {
-            font-style: italic;
-            color: #555555;
+        .peticion-caja {
             background-color: #f0f9f8;
+            border: 1px solid #e0f0ef;
             padding: 15px;
             border-radius: 8px;
             font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .peticion-titulo {
+            font-weight: bold;
+            color: #0d8476;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .peticion-texto {
+            font-style: italic;
+            color: #555555;
+            margin: 0;
         }
 
         .contacto { 
@@ -110,21 +124,33 @@
                     
                     <div class="cuerpo">
                         <h2>¡Hola Cosme García! Tienes un nuevo prospecto.</h2>
-                        <p>El sistema ha captado a un nuevo cliente que acaba de solicitar un diagnóstico empresarial. A continuación, sus datos de contacto:</p>
+                        <p>El sistema ha captado a un nuevo lead completamente perfilado. A continuación, su radiografía empresarial:</p>
                         
                         <div class="tarjeta-contacto">
-                            <p><strong>Nombre:</strong> {{ $cliente->nom_cliente }} {{ $cliente->apellidos_cliente }}</p>
-                            <p><strong>Empresa:</strong> {{ $cliente->nom_empresa }}</p>
+                            <p><strong>Contacto:</strong> {{ $cliente->nom_cliente }} {{ $cliente->apellidos_cliente }}</p>
                             <p><strong>Correo:</strong> <a href="mailto:{{ $cliente->correo_cliente }}" style="color: #0d8476; font-weight: bold;">{{ $cliente->correo_cliente }}</a></p>
+                            <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 10px 0;">
+                            <p><strong>Empresa:</strong> {{ $cliente->nom_empresa }}</p>
+                            <p><strong>Rubro:</strong> {{ $cliente->rubro_empresa }}</p>
+                            <p><strong>Tamaño del equipo:</strong> {{ $cliente->tamanio_equipo }}</p>
+                            <p><strong>Tiempo operando:</strong> {{ $cliente->tiempo_operacion }}</p>
+                            <p><strong>Área crítica:</strong> {{ $cliente->area_problema }}</p>
                         </div>
 
-                        <h3>Situación actual de la empresa:</h3>
-                        <div class="peticion">
-                            "{{ $cliente->peticion_cliente }}"
+                        <h3>Contexto Estratégico:</h3>
+                        
+                        <div class="peticion-caja">
+                            <p class="peticion-titulo">Situación actual (Obstáculo principal):</p>
+                            <p class="peticion-texto">"{{ $cliente->problematica }}"</p>
+                        </div>
+
+                        <div class="peticion-caja">
+                            <p class="peticion-titulo">Objetivo a lograr (Expectativa):</p>
+                            <p class="peticion-texto">"{{ $cliente->resultados }}"</p>
                         </div>
 
                         <div class="contacto">
-                            <p><strong>Siguiente paso:</strong> El cliente ya recibió su análisis generado por IA. Es el momento ideal para contactarlo y ofrecerle una solución a medida para su empresa.</p>
+                            <p><strong>Siguiente paso:</strong> El prospecto ya recibió el diagnóstico inicial generado por la Inteligencia Artificial. Con este perfil detallado, tienes todo el contexto para contactarlo y proponerle una estrategia comercial a la medida.</p>
                         </div>
                     </div>
 

@@ -17,7 +17,12 @@ return new class extends Migration
             $table->string("apellidos_cliente", 100);
             $table->string("correo_cliente", 200);
             $table->string("nom_empresa", 150);
-            $table->string("peticion_cliente", 4500);
+            $table->string("rubro_empresa", 150);
+            $table->string("tamanio_equipo", 150);
+            $table->string("tiempo_marca", 100);
+            $table->string("area_problema", 150);
+            $table->string("problematica", 2000);
+            $table->string("resultados", 2000);
             $table->timestamps();
         });
         

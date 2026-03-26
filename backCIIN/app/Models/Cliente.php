@@ -13,7 +13,12 @@ class Cliente extends Model
         "apellidos_cliente",
         "correo_cliente",
         "nom_empresa",
-        "peticion_cliente"
+        "rubro_empresa",
+        "tamanio_equipo",
+        "tiempo_marca",
+        "area_problema",
+        "problematica",
+        "resultados"
     ];
     
 }

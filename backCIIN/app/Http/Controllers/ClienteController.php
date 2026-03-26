@@ -32,7 +32,12 @@ class ClienteController extends Controller
         "apellidos_cliente" => "required|string|max:100",
         "correo_cliente" => "required|string|max:200" ,
         "nom_empresa"  => "required|string|max:100",  
-        "peticion_cliente"=> "required|string|max:4500"
+        "rubro_empresa" => "required|string|max: 150",
+        "tamanio_equipo" => "required|string|max: 150",
+        "tiempo_marca" => "required|string|max: 100",
+        "area_problema" => "required|string|max: 150",
+        "problematica" => "required|string|max:2000",
+        "resultados" => "required|string|max:2000"
         ]);
 
         $cliente_creado = Cliente::firstOrCreate(
@@ -41,8 +46,7 @@ class ClienteController extends Controller
         );
 
         $diagnosticoIa = $gemini->peticionGemini(
-            $request->nom_empresa,
-            $request->peticion_cliente
+            $cliente_creado
         );
 
         if(is_array($diagnosticoIa)){
