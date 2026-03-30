@@ -1,5 +1,5 @@
 import { Container, Row, Col, Image, Button } from "react-bootstrap";
-import { useMemo, useRef, useEffect } from "react";
+import { useMemo, useRef, useEffect, useState } from "react";
 import { Link} from 'react-router-dom';
 import './blog.css';
 import blogImagenes from '../../img/blog/blogImg';
@@ -7,9 +7,13 @@ import conceptos from '../../img/blog/videos_Juan/BLOG-Conceptos.mp4';
 import practicas from '../../img/blog/videos_Juan/BLOG-Prácticas.mp4';
 import tips from '../../img/blog/videos_Juan/BLOG-Tips.mp4';
 import { FaBookOpen, FaVideo } from "react-icons/fa"; 
+import placeholder from '../../img/placeholder.jpg';
 
 function Blog() {
-        
+
+    const [contBlog, setContBlog] = useState([]);
+    const [isLoading, setLoading] = useState(true);   
+    
     const particle = useMemo(() => {
         return Array.from({ length: 100 }).map((_, ind) => ({
             id: ind,
@@ -36,16 +40,40 @@ function Blog() {
             if (elem) observer.observe(elem);
         });
         return () => observer.disconnect();
-    }, []);
+    }, [contBlog]);
 
-    const contBlog = [
-        {titulo: "La hiperpersonalización y el dominio del video corto en el consumo digital", subtitulo: "La hiperpersonalización ya es una exigencia del consumidor",
-        esDestacado: true, fecha_publicacion: "21/02/2026", imagen: blogImagenes.img2, 
-        contenido: "El marketing más escta perdiéndo efectividad. Actualmente, los consumidores esperan experiencias adaptadas a sus intereses, necesidades y comportamiento digital."},
+    useEffect(() => {
+        const obtenerBlogs = async() => {
+        try{
+            const obtener = await fetch("http://127.0.0.1:8000/api/blog",{
+                headers:{ "Accept" : "application/json",}
+            });
 
-        {titulo: "Innovación y tendencias en marketing digital:el camino hacia un posicionamiento moderno", subtitulo: "",
-        esDestacado: false, fecha_publicacion: "25/02/2026", imagen: blogImagenes.img10,  contenido: "El marketing más escta perdiéndo efectividad. Actualmente, los consumidores esperan experiencias adaptadas a sus intereses, necesidades y comportamiento digital."},
-    ]
+            if(!obtener.ok){
+                setLoading(false);
+                const erroJson = await obtener.json();
+                console.log("Json de error", erroJson);
+                throw new Error(erroJson.msg || erroJson.message || "No se pudieron cargar los blogs");
+            }
+
+            const contenido_blog = await obtener.json();
+
+            const crearArray = Array.isArray(contenido_blog)
+            ? contenido_blog
+            : Object.values(contenido_blog);
+
+            setContBlog(crearArray);
+            console.log(contenido_blog);
+
+        }catch(error){
+            console.error("Error: ", error);
+            alert(`Errores: ${error}`);
+        } finally{
+            setLoading(false);
+       };
+    }
+        obtenerBlogs();  
+    }, [])
 
     const colorMarca = "#0f5132";
 
@@ -68,13 +96,28 @@ function Blog() {
 
             <Container className="z-2 py-5">
 
-             {contBlog.map((contenido, ind) =>   
-                <Row key={ind} className="image-card bg-white shadow rounded-4 overflow-hidden mb-5 g-0 border" ref={(el) => { if (el && !elemList.current.includes(el)) elemList.current.push(el) }}>
+            {isLoading && (
+                <div className="d-flex justify-content-center mt-5">
+                    <div className="spinner-border" style={{color: colorMarca}} role="status">
+                        <span className="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            )}
+            
+            {!isLoading && Array.isArray(contBlog) && contBlog.length == 0 && (
+                <div className="w-100 rounded bg-white p-4">
+                <h2 className="fw-bold fs-1 text-center" style={{color: colorMarca, borderColor: "black"}}>No hay articulos que cargar de momento</h2>
+                </div>
+            )}
+
+            {!isLoading && contBlog.length > 0 && (
+            contBlog.map((contenido, ind) => (
+                <Row key={contenido.id || ind} className="image-card bg-white shadow rounded-4 overflow-hidden mb-5 g-0 border" ref={(el) => { if (el && !elemList.current.includes(el)) elemList.current.push(el) }}>
                     
                     <Col xs={12} md={6} className="overflow-hidden">
                         <Link to={"/blog-detalle"} className="d-block h-100">
                             <Image 
-                                src={contenido.imagen}  
+                                src={contenido.img_blog_ruta ? contenido.img_blog_ruta : placeholder}  
                                 className="w-100 h-100 object-fit-fill img-zoom"
                                 alt="Tendencias Marketing Digital"
                             />
@@ -82,14 +125,14 @@ function Blog() {
                     </Col>
 
                     <Col xs={12} md={6} className="p-4 p-lg-5 d-flex flex-column justify-content-center">
-                        {contenido.esDestacado &&
+                        {contenido.esDestacado === 1 &&
                             <div className="d-flex align-items-center mb-3 text-muted small">
                                 <FaBookOpen className="me-2" style={{color: colorMarca}}/>
                                 <span>CONTENIDO DESTACADO</span>
                             </div>
                         }   
                         <h1 className="fw-bold mb-3" style={{ color: colorMarca, fontSize: '2.5rem', lineHeight: '1.2' }}>
-                            {contenido.titulo}
+                            {contenido.titulo_blog}
                         </h1>
                         
                         <p className="text-secondary mb-4" style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
@@ -107,6 +150,7 @@ function Blog() {
                         </Link>
                     </Col>
                 </Row>
+                    ))
                 )}
                 <div className="text-center mb-4 mt-5 text-card" ref={(el) => { if (el && !elemList.current.includes(el)) elemList.current.push(el) }}>
                     <div className="d-flex align-items-center justify-content-center mb-2">

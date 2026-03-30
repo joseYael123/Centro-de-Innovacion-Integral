@@ -1,6 +1,7 @@
 import { Container, Row, Col, Image, Button } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import placeholder from '../../img/placeholder.jpg';
 
 function Detalle() {
     const location = useLocation();
@@ -35,7 +36,7 @@ function Detalle() {
             <Row className="mb-4">
                 <Col xs={12}>
                     <h1 className="fw-bolder display-4 mb-4" style={{ color: "#0f5132", letterSpacing: '-1px' }}>
-                        {contenido.titulo}
+                        {contenido.titulo_blog}
                     </h1>
                     <hr style={{ opacity: 0.15, backgroundColor: "#0f5132", height: "2px", margin: 0 }} />
                 </Col>
@@ -49,14 +50,14 @@ function Detalle() {
                         </h3>
                     )}
                     <p className="fs-5 text-dark" style={{ lineHeight: '1.9', textAlign: 'justify' }}>
-                        {contenido.contenido}
+                        {contenido.cont_blog}
                     </p>
                 </Col>
 
                 <Col xs={12} lg={6}>
                     <Image 
-                        src={contenido.imagen} 
-                        alt={contenido.titulo}
+                        src={contenido.img_blog_ruta ? contenido.img_blog_ruta : placeholder} 
+                        alt={contenido.titulo_blog}
                         className="w-100 rounded-4 shadow-lg object-fit-cover"
                         style={{ maxHeight: '600px' }}
                     />
