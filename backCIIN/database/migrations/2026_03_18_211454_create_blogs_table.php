@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('blogs', function (Blueprint $table) {
             $table->id();
             $table->string("titulo_blog", 255);
-            $table->date("fecha_publicacion");
+            $table->string("fecha_publicacion", 255);
             $table->string("subtitulo", 200);
             $table->string("cont_blog",10000);
-            $table->string("img_blog_ruta", 500);
+            $table->string("img_blog_ruta", 500)->default("");
             $table->boolean("esDestacado");
             $table->timestamps();
         });

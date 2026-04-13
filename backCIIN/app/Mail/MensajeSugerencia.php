@@ -10,21 +10,20 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CorreoDiagnostico extends Mailable
+class MensajeSugerencia extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
+    public $nombre_cliente;
+    public $sugerencia;
 
-        public $cliente;
-        public $diagnostico;
-
-    public function __construct($cliente, $diagnostico)
-    {   
-        $this->cliente = $cliente;        
-        $this->diagnostico = $diagnostico;
+    public function __construct($nombre_cliente, $sugerencia)
+    {
+        $this->nombre_cliente = $nombre_cliente;
+        $this->sugerencia = $sugerencia;
     }
 
     /**
@@ -33,8 +32,7 @@ class CorreoDiagnostico extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Correo Diagnostico De IA',
-            from: "centrodeinnovaciondigital@gmail.com.mx"
+            subject: 'Nueva Sugerencia Entrante',
         );
     }
 
@@ -44,11 +42,7 @@ class CorreoDiagnostico extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.diagnostico',
-            with: [
-                'cliente' => $this->cliente,
-                'diagnostico' => $this->diagnostico
-            ]
+            view: 'emails.sugerencia',
         );
     }
 

@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Contacto;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Mail\MensajeSugerencia;
+use Illuminate\Support\Facades\Mail;
 class ContactoController extends Controller
 {
     /**
@@ -14,7 +15,7 @@ class ContactoController extends Controller
     public function index()
     {
         $traer_contactos = Contacto::all();
-        if($traer_contactos === []) return response() -> json(["msg" => "No hay registros en la bd"]);
+        if($traer_contactos->isEmpty()) return response() -> json(["msg" => "No hay registros en la bd"]);
         return response() -> json($traer_contactos, 200);
     }
 
@@ -35,6 +36,9 @@ class ContactoController extends Controller
             $validated
         );
 
+        Mail::to("cosmegarcia@centrodeinnovacionintegral.com")
+        ->send(new MensajeSugerencia($request->nombre_contacto, $request->sugerencia));
+        
         return response() -> json([
             "msg" => "Sugerencia recibida correctamente",
             "Data" => $contacto_creado 
@@ -44,9 +48,9 @@ class ContactoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Contacto $contacto)
+    public function show($id)
     {  
-        $encontrar_sugerencia = Contacto::find($contacto);
+        $encontrar_sugerencia = Contacto::find($id);
         if(!$encontrar_sugerencia) return response() -> json(["msg" => "No hay una sugerencia con ese id"]);
         return response() -> json($encontrar_sugerencia, 200);
     }
@@ -74,10 +78,13 @@ class ContactoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Contacto $contacto)
+    public function destroy($id)
     {
-        $encontrar_registro = Contacto::find($contacto);
-        if(!$encontrar_registro) return response() -> json(["msg" => "No hay una sugerencia con ese id para borrar"]);        
-        return Contacto::destroy($encontrar_registro);
+        $encontrar_registro = Contacto::find($id); 
+       if(!$encontrar_registro)return response() -> json(["msg" => "No hay una sugerencia con ese id para borrar"]);        
+       $encontrar_registro->delete();
+       return response()->json([
+        "Msg" => "Contacto borrado con exito"
+       ],200);  
     }
 }

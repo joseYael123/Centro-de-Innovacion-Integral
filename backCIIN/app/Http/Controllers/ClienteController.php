@@ -18,7 +18,7 @@ class ClienteController extends Controller
     public function index()
     {
         $lista_clientes = Cliente::all();
-        if($lista_clientes == []) return response() -> json(["msg" => "No hay registros en la BD"]);
+        if($lista_clientes->isEmpty()) return response() -> json(["msg" => "No hay registros en la BD"],404);
         return response() -> json($lista_clientes, 200);
     }
 
@@ -41,7 +41,8 @@ class ClienteController extends Controller
         ]);
 
         $cliente_creado = Cliente::firstOrCreate(
-            ["correo_cliente" => $request->correo_cliente],
+            ["correo_cliente" => $request->correo_cliente,
+             "nom_empresa" => $request->nom_empresa],
             $validated 
         );
 
@@ -72,9 +73,9 @@ class ClienteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cliente $cliente)
+    public function show($id)
     {
-        $cliente_encontrado = Cliente::find($cliente);
+        $cliente_encontrado = Cliente::find($id);
         if(!$cliente_encontrado) return response() -> json(["msg" => "User no encontrado"], 404);
         return response() -> json($cliente_encontrado, 200);
     }
@@ -103,10 +104,13 @@ class ClienteController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cliente $cliente)
+    public function destroy($id)
     {
-        $cliente_a_destruir = Cliente::find($cliente);
+        $cliente_a_destruir = Cliente::find($id);
         if(!$cliente_a_destruir)return response() -> json(["msg" => "cliente no encontrado para borrar"], 404);
-        return Cliente::destroy($cliente);
+        $cliente_a_destruir->delete();
+        return response()->json([
+            "Msg" => "Cliente borrado con exito"
+        ],200);
     }
 }
