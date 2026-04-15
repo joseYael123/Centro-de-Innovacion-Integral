@@ -24,6 +24,29 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
     gap: 15px;
     flex-direction: column;
+    animation:aparecer 0.3s ease-in-out;
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes desaparecer {
+    from {opacity: 1; transform: scale(1);}
+    to{opacity: 0; transform: scale(0.95);}
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; }
+}
+
+.cerrar{
+    animation: desaparecer 0.3s ease-in forwards;
+}
+
+.taparVista.cerrar{
+    animation: fadeOut 0.3s ease-in forwards;
 }
 
 .animacion-carga{
@@ -35,10 +58,19 @@
     animation:spinner 1s linear infinite;
 }
 
-.texto-carga{
-    font-weight: bold;
+
+.texto-carga {
+    font-weight: 700;
     font-size: 24px;
-    color: #333;
+    color: #2b2b2b;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.texto-secundario {
+    font-size: 1rem;
+    color: #6c757d;
+    margin: 0;
 }
 
 @keyframes spinner {

@@ -5,17 +5,15 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ContactoController;
 use App\Http\Controllers\BlogsController;
 
-Route::apiResource("clientes", ClienteController::class)
-->middleware("throttle:50,1");
+Route::middleware(['auth:sanctum'])->group(function(){
 
-Route::apiResource("contactos", ContactoController::class)
-->middleware("throttle:50,1");
+Route::post("clientes", [ClienteController::class, 'store'])->
+middleware(['throttle:limitar-gemini']);
 
-Route::apiResource("blog", BlogsController::class)
-->middleware("throttle:50,1");
+Route::apiResource("clientes", ClienteController::class)->except(['store']);
 
+Route::apiResource("blog", BlogsController::class);
 
-
-
-
+Route::apiResource("contactos", ContactoController::class);
+});
 

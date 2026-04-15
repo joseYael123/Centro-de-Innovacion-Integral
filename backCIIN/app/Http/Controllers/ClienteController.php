@@ -9,6 +9,7 @@ use App\Services\GeminiService;
 use App\Mail\CorreoDiagnostico;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CorreoJefe;
+use Illuminate\Support\Facades\Log;
 
 class ClienteController extends Controller
 {
@@ -27,10 +28,11 @@ class ClienteController extends Controller
      */
     public function store(Request $request, GeminiService $gemini)
     {
+       
         $validated = $request->validate([
         "nom_cliente" => "required|string|max:100",
         "apellidos_cliente" => "required|string|max:100",
-        "correo_cliente" => "required|string|max:200" ,
+        "correo_cliente" => "required|email:rfc,dns|max:255",
         "nom_empresa"  => "required|string|max:100",  
         "rubro_empresa" => "required|string|max: 150",
         "tamanio_equipo" => "required|string|max: 150",
@@ -39,7 +41,7 @@ class ClienteController extends Controller
         "problematica" => "required|string|max:2000",
         "resultados" => "required|string|max:2000"
         ]);
-
+    try{
         $cliente_creado = Cliente::firstOrCreate(
             ["correo_cliente" => $request->correo_cliente,
              "nom_empresa" => $request->nom_empresa],
@@ -68,6 +70,12 @@ class ClienteController extends Controller
             "Data" => $cliente_creado,
             "Mensaje de gemini" => $diagnosticoIa
         ], 201);
+        }catch(\Exception $e){
+
+            Log::error('Error generando diagnóstico: ' . $e->getMessage());
+
+            return response()->json(["msg" => "Hubo un problema al general el diagnostico"], 500);
+        }
     }
 
     /**
@@ -106,11 +114,5 @@ class ClienteController extends Controller
      */
     public function destroy($id)
     {
-        $cliente_a_destruir = Cliente::find($id);
-        if(!$cliente_a_destruir)return response() -> json(["msg" => "cliente no encontrado para borrar"], 404);
-        $cliente_a_destruir->delete();
-        return response()->json([
-            "Msg" => "Cliente borrado con exito"
-        ],200);
     }
 }

@@ -1,5 +1,5 @@
 import { Form, Container, Button } from 'react-bootstrap';
-import { use, useState } from 'react';
+import {useState } from 'react';
 import './Contacto.css';
 import ModalCarga from '../Componentes/ModalCarga';
 import {useNavigate} from 'react-router-dom';
@@ -11,6 +11,7 @@ function Contacto() {
     const initalState = {correo_contacto: '', nombre_contacto: '', apellidos_contacto: '', sugerencia: ''};
     const [datos, setDatos] = useState(initalState);
     const [cargando, setCargando] = useState(false);
+    const [mensaje, setMensaje] = useState("");
     const [tipo, setTipo] = useState("");
     const navegar = useNavigate();
 
@@ -18,28 +19,37 @@ function Contacto() {
     try{
         e.preventDefault();
 
-        if(datos.nombre_contacto == "" || datos.apellidos_contacto == "" || datos.correo_contacto == "" || datos.sugerencia == ""){
-            alert("Todos los campos deben de estar llenos para subir la sugerencia");
-            return;
-        }
-
+    
         setTipo("carga")
         setCargando(true);
+
+
+        if(datos.nombre_contacto == "" || datos.apellidos_contacto == "" || datos.correo_contacto == "" || datos.sugerencia == ""){
+            setMensaje("Todos los campos deben estar llenos para poder continuar");
+            setTipo("error");
+            setTimeout(() =>{
+                setCargando(false);
+            },2500)
+            return;
+        }
 
         const sugerenciaSubida = 
         await fetch("http://127.0.0.1:8000/api/contactos",{
             method: "POST",
             headers: {"Accept" :  "application/json",
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${process.env.REACT_APP_TOKEN_API}`
             },
             body: JSON.stringify(datos)
         })
 
         if(!sugerenciaSubida.ok){
-            setCargando(false);
+            setTipo("error");
+            setTimeout(() =>{
+                setCargando(false);
+            }, 3000)
             const mensaje_error = sugerenciaSubida.json();
             console.log("Hubo un error al subir los datos checa la consola");
-            alert("Hubo un error al subir los datos checa la consola");
             console.error(mensaje_error);
         }
 
@@ -49,11 +59,11 @@ function Contacto() {
                 setCargando(false);
                 setDatos(initalState);
             },3000)
+            setTimeout(() =>{
+                navegar('/');
+            },4000);
         }
 
-        setTimeout(() =>{
-                navegar('/');
-        },4500);
         }catch(error){
             console.error("error: ", error);
         }   
@@ -62,8 +72,8 @@ function Contacto() {
     return (
         <Container fluid className='contCont d-flex justify-content-center align-items-center my-5'>
             {cargando &&
-                <ModalCarga esVisible={cargando} tipoCarga={tipo} />
-            }
+                <ModalCarga esVisible={cargando} tipoCarga={tipo} errorMsg={mensaje}/>
+            }            
             <Form className='rounded shadow-lg p-5 w-75 bg-white' onSubmit={handleSubmit} style={{ maxWidth: "800px" }}>
                 
                 <h2 className='fw-bold text-center mb-2' style={{ color: brandColor }}>Contáctanos</h2>

@@ -3,6 +3,7 @@ import { useMemo, useState} from 'react';
 import './diagnostico.css';
 import ModalCarga from '../Componentes/ModalCarga';
 import {useNavigate} from 'react-router-dom';
+import { FaGlasses } from 'react-icons/fa';
 
 function Diagnostico() {
     const particulas = useMemo(() => {
@@ -16,6 +17,7 @@ function Diagnostico() {
     }, []);
 
     const navegar = useNavigate();
+    const [confirmarCorreo, setConfirmarCorreo] = useState("");
 
     const [datosForm, setDatosForm] = useState({
         nom_cliente: "",
@@ -74,21 +76,39 @@ function Diagnostico() {
 
     const [cargando, setCargando] = useState(false);
     const [carga, tipoCarga] = useState("carga");
+    const [diagnostico, setDiagnostico] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
 
     const handleSubmit = async(e) => {
         e.preventDefault();
+
+        setCargando(true);
+        tipoCarga("carga");
+        setDiagnostico(true);
 
         if(datosForm.nom_cliente === "" || datosForm.apellidos_cliente === "" || 
            datosForm.correo_cliente === "" || datosForm.nom_empresa === "" || datosForm.rubro_empresa === "" ||
            datosForm.tamanio_equipo === "" || datosForm.area_problema === "" || datosForm.nom_empresa === "" || datosForm.problematica === "" ||
            datosForm.resultados === ""
         ){
-            alert("Todos los campos deben de estar llenos para hacer un diagnostico correcto");
+            setErrorMsg("Todos los campos deben de estar llenos para hacer un diagnostico correcto");
+            tipoCarga("error");
+            setDiagnostico(false);
+            setTimeout(() =>{
+                setCargando(false);
+            },2000)
             return;
         }
 
-        setCargando(true);
-        tipoCarga("carga");
+        if(datosForm.correo_cliente !== confirmarCorreo){
+            setErrorMsg("Los correos deben coincidir para poder continuar");
+            tipoCarga("error");
+            setDiagnostico(false);
+            setTimeout(() =>{
+                setCargando(false)
+            },2500);
+            return;
+        }
 
         try{
         const subirPeticion = 
@@ -97,15 +117,32 @@ function Diagnostico() {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.REACT_APP_TOKEN_API}`
             },
             body: JSON.stringify(datosForm),
         });
 
         if(!subirPeticion.ok){
-            setCargando(false);
-            const errorBack = await subirPeticion.json();
-            console.log("Error del backend", errorBack);
-            alert(`Hubo un error desde el backend revisa la consola`);
+            tipoCarga("error");
+             setTimeout(() =>{
+                setCargando(false);
+            },5000);
+
+            if(subirPeticion.status == 429){
+                setErrorMsg("Haz alcanzado el limite de tus 2 peticiones diarias, vuelve a intentarlo mañana");
+                return;
+            }
+
+            if(subirPeticion.status === 422){
+                const errorBack = await subirPeticion.json();
+                const primerErrorMsg = Object.values(errorBack.errors)[0][0];
+
+                console.log("Error del backend", errorBack);
+                setErrorMsg(primerErrorMsg);
+                return;
+            }
+            
+            setErrorMsg("Hubo un error al procesar su petición. Intente más tarde.");
             return;
         }
 
@@ -113,6 +150,7 @@ function Diagnostico() {
 
         if(subirPeticion.ok){
             setTimeout(() => {
+            setDiagnostico(false);
             setCargando(false);    
 
             setDatosForm({
@@ -127,11 +165,12 @@ function Diagnostico() {
                 problematica: "",
                 resultados: "",   
             })
-            }, 2500)}
-            
+            }, 3500)
             setTimeout(() =>{
                 navegar('/');
             },4000);
+            }
+            
 
         }catch(error){
             setCargando(false);
@@ -144,7 +183,7 @@ function Diagnostico() {
         <Container fluid className='diagnostico-container d-flex justify-content-center align-items-center w-100 min-vh-100 position-relative overflow-hidden py-5'>
             
             {cargando &&
-                <ModalCarga esVisible={cargando} tipoCarga={carga}/>
+                <ModalCarga esVisible={cargando} tipoCarga={carga} esDiagnostico={diagnostico} errorMsg={errorMsg}/>
             }
 
             {particulas.map((part) => {
@@ -171,6 +210,7 @@ function Diagnostico() {
                             <p className="form-subtitle fs-6">
                                 Descubre el potencial oculto de tu negocio. Completa este diagnóstico rápido y nuestro equipo diseñará una estrategia exclusiva para ti.
                             </p>
+                            <small className='form-subtitle fw-bold'>SOLO SON PERMITIDOS 2 DIAGNOSTICOS POR DIA</small>
                         </div>
 
                         <Form onSubmit={handleSubmit}>
@@ -213,18 +253,28 @@ function Diagnostico() {
                                         }
                                     />
                                 </Form.Group>
-
-                                <Form.Group as={Col} md={6} controlId="formEmpresa">
-                                    <Form.Label className='light-label'>Nombre de la Empresa</Form.Label>
-                                    <Form.Control type="text" className='light-input' placeholder='Ej. InnovaTech S.A.' required name="nom_empresa"
-                                        value={datosForm.nom_empresa} onChange={(e) => 
-                                            setDatosForm({
-                                                ...datosForm,
-                                                [e.target.name] : e.target.value
-                                            })
-                                        }
+                                
+                                 <Form.Group as={Col} md={6} controlId="formCorreo" className="mb-4 mb-md-0">
+                                    <Form.Label className='light-label'>Confirmar Correo</Form.Label>
+                                    <Form.Control type="email" className='light-input' required 
+                                        value={confirmarCorreo} onChange={(e) =>
+                                            setConfirmarCorreo(e.target.value)
+                                        } onPaste={(e) => e.preventDefault()}
                                     />
                                 </Form.Group>
+                                <Row className='w-100 mb-4'>
+                                    <Form.Group as={Col} md={12} controlId="formEmpresa">
+                                        <Form.Label style={{fontWeight: "600", fontSize: 16, marginTop: 12, alignSelf: "center"}}>Nombre de la Empresa</Form.Label>
+                                        <Form.Control type="text" className='light-input' style={{alignSelf: "center"}} placeholder='Ej. InnovaTech S.A.' required name="nom_empresa"
+                                            value={datosForm.nom_empresa} onChange={(e) => 
+                                                setDatosForm({
+                                                    ...datosForm,
+                                                    [e.target.name] : e.target.value
+                                                })
+                                            }
+                                        />
+                                    </Form.Group>
+                                </Row>
                             </Row>
 
                         <hr className="border-secondary opacity-10 my-4" />

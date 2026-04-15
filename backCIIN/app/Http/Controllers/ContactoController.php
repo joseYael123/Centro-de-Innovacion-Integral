@@ -80,11 +80,5 @@ class ContactoController extends Controller
      */
     public function destroy($id)
     {
-        $encontrar_registro = Contacto::find($id); 
-       if(!$encontrar_registro)return response() -> json(["msg" => "No hay una sugerencia con ese id para borrar"]);        
-       $encontrar_registro->delete();
-       return response()->json([
-        "Msg" => "Contacto borrado con exito"
-       ],200);  
     }
 }

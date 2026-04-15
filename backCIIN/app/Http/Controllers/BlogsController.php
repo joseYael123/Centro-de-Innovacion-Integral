@@ -14,7 +14,7 @@ class BlogsController extends Controller
     public function index()
     {
         $blogs = Blog::all();
-        if($blogs->isEmpty()) return response()->json(["msg" => "No hay blogs disponibles"], 404);
+        if($blogs->isEmpty()) return response()->json(["msg" => "No hay blogs disponibles en la bd"], 404);
         return response()->json($blogs,200);
     }
 
@@ -96,11 +96,5 @@ class BlogsController extends Controller
      */
     public function destroy($id)
     {
-        $buscar_blog = Blog::find($id);
-        if(!$buscar_blog) return response()->json(["msg" => "No esta ese blog para borrar"],404);
-        $buscar_blog->destroy();
-        return response()->json([
-            "Msg" => "Blog borrado con exito"
-        ],200);
     }
 }

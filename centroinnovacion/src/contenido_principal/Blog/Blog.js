@@ -6,8 +6,9 @@ import blogImagenes from '../../img/blog/blogImg';
 import conceptos from '../../img/blog/videos_Juan/BLOG-Conceptos.mp4';
 import practicas from '../../img/blog/videos_Juan/BLOG-Prácticas.mp4';
 import tips from '../../img/blog/videos_Juan/BLOG-Tips.mp4';
-import { FaBookOpen, FaVideo } from "react-icons/fa"; 
+import { FaBookOpen, FaVideo, FaNewspaper } from "react-icons/fa"; 
 import placeholder from '../../img/placeholder.jpg';
+
 
 function Blog() {
 
@@ -46,7 +47,10 @@ function Blog() {
         const obtenerBlogs = async() => {
         try{
             const obtener = await fetch("http://127.0.0.1:8000/api/blog",{
-                headers:{ "Accept" : "application/json",}
+                headers:{ 
+                    "Accept" : "application/json",
+                    "Authorization" : `Bearer ${process.env.REACT_APP_TOKEN_API}`
+                }
             });
 
             if(!obtener.ok){
@@ -67,7 +71,6 @@ function Blog() {
 
         }catch(error){
             console.error("Error: ", error);
-            alert(`Errores: ${error}`);
         } finally{
             setLoading(false);
        };
@@ -104,9 +107,22 @@ function Blog() {
                 </div>
             )}
             
-            {!isLoading && Array.isArray(contBlog) && contBlog.length == 0 && (
-                <div className="w-100 rounded bg-white p-4">
-                <h2 className="fw-bold fs-1 text-center" style={{color: colorMarca, borderColor: "black"}}>No hay articulos que cargar de momento</h2>
+            {!isLoading && Array.isArray(contBlog) && contBlog.length === 0 && (
+            <div 
+                className="w-100 rounded bg-white p-5 d-flex flex-column align-items-center justify-content-center shadow-sm"
+                style={{ border: "2px dashed #dee2e6", minHeight: "300px" }}
+                >
+                    <FaNewspaper
+                        style={{ fontSize: "4rem", color: "#ced4da", marginBottom: "1rem" }} 
+                    />
+        
+                    <h3 className="fw-bold fs-4 text-center mb-2" style={{ color: colorMarca }}>
+                        Aún no hay artículos publicados
+                    </h3>
+                
+                    <p className="text-muted text-center mb-0">
+                        Estamos preparando contenido increíble. Vuelve pronto para leer nuestros nuevos artículos.
+                    </p>
                 </div>
             )}
 
