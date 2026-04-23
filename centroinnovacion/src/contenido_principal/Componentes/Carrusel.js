@@ -1,6 +1,7 @@
 import React from 'react';
 import { Carousel } from 'react-bootstrap';
 import imagenes from '../../img/imagenes';
+import {TurnStile} from "@marsidev/react-turnstile";
 
 const imaganesLi = [
     {imagen: imagenes.img1},
@@ -8,7 +9,6 @@ const imaganesLi = [
     {imagen: imagenes.img3},
     {imagen: imagenes.img4},
     {imagen: imagenes.img5},
-    {imagen: imagenes.img6}
 ];
 
 function Carrusel({ style }) {

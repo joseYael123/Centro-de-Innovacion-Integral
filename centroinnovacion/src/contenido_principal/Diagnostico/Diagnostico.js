@@ -1,9 +1,10 @@
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { useMemo, useState} from 'react';
+import { useMemo, useState, useRef} from 'react';
 import './diagnostico.css';
 import ModalCarga from '../Componentes/ModalCarga';
 import {useNavigate} from 'react-router-dom';
 import { FaGlasses } from 'react-icons/fa';
+import { Turnstile } from '@marsidev/react-turnstile';
 
 function Diagnostico() {
     const particulas = useMemo(() => {
@@ -18,6 +19,7 @@ function Diagnostico() {
 
     const navegar = useNavigate();
     const [confirmarCorreo, setConfirmarCorreo] = useState("");
+    const turnRef = useRef();
 
     const [datosForm, setDatosForm] = useState({
         nom_cliente: "",
@@ -78,6 +80,7 @@ function Diagnostico() {
     const [carga, tipoCarga] = useState("carga");
     const [diagnostico, setDiagnostico] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
+    const [tokenTung, setTokenTung] = useState(null);
 
     const handleSubmit = async(e) => {
         e.preventDefault();
@@ -85,6 +88,11 @@ function Diagnostico() {
         setCargando(true);
         tipoCarga("carga");
         setDiagnostico(true);
+
+        if(!tokenTung){
+            console.error("Por favor, espera a que se complete la verificación de seguridad.");
+            return;
+        }
 
         if(datosForm.nom_cliente === "" || datosForm.apellidos_cliente === "" || 
            datosForm.correo_cliente === "" || datosForm.nom_empresa === "" || datosForm.rubro_empresa === "" ||
@@ -112,39 +120,53 @@ function Diagnostico() {
 
         try{
         const subirPeticion = 
-        await fetch("http://127.0.0.1:8000/api/clientes",{
+        await fetch("https://centrodeinnovacionintegral.com.mx/core/public/index.php/api/clientes",{
             method: "POST",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${process.env.REACT_APP_TOKEN_API}`
             },
-            body: JSON.stringify(datosForm),
+            body: JSON.stringify({
+                ...datosForm,
+                turnstile_token: tokenTung
+            }),
         });
 
-        if(!subirPeticion.ok){
-            tipoCarga("error");
-             setTimeout(() =>{
-                setCargando(false);
-            },5000);
+      if(!subirPeticion.ok){
+        tipoCarga("error");
+        setTimeout(() =>{
+        setCargando(false);
+        },5000);
 
-            if(subirPeticion.status == 429){
-                setErrorMsg("Haz alcanzado el limite de tus 2 peticiones diarias, vuelve a intentarlo mañana");
-                return;
-            }
+        if(turnRef.current){
+            turnRef.current.reset();
+        }
+        
+        setTokenTung(null);
 
-            if(subirPeticion.status === 422){
-                const errorBack = await subirPeticion.json();
-                const primerErrorMsg = Object.values(errorBack.errors)[0][0];
+        const errorBack = await subirPeticion.json();
+        console.log("RESPUESTA REAL DEL SERVIDOR:", errorBack); 
 
-                console.log("Error del backend", errorBack);
-                setErrorMsg(primerErrorMsg);
-                return;
-            }
-            
-            setErrorMsg("Hubo un error al procesar su petición. Intente más tarde.");
+        if(subirPeticion.status === 429){
+            setErrorMsg("Haz alcanzado el limite de tus 3 diagnosticos diarios...");
+            return;
+        }   
+
+        if(subirPeticion.status === 422){
+            const primerErrorMsg = Object.values(errorBack.errors)[0][0];
+            setErrorMsg(primerErrorMsg);
             return;
         }
+    
+        if (errorBack.error || errorBack.magia_cloudflare) {
+            setErrorMsg(errorBack.error || "Error de seguridad");
+            return;
+        }   
+
+        setErrorMsg("Hubo un error al procesar su petición. Intente más tarde.");
+        return;
+    }
 
         tipoCarga("subido");
 
@@ -210,7 +232,7 @@ function Diagnostico() {
                             <p className="form-subtitle fs-6">
                                 Descubre el potencial oculto de tu negocio. Completa este diagnóstico rápido y nuestro equipo diseñará una estrategia exclusiva para ti.
                             </p>
-                            <small className='form-subtitle fw-bold'>SOLO SON PERMITIDOS 2 DIAGNOSTICOS POR DIA</small>
+                            <small className='form-subtitle fw-bold'>SOLO SON PERMITIDOS 3 DIAGNOSTICOS POR DIA</small>
                         </div>
 
                         <Form onSubmit={handleSubmit}>
@@ -343,6 +365,17 @@ function Diagnostico() {
                                 />
                             </Form.Group>
                         </Row>
+
+                        <div className='my-4' style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden', zIndex: -1 }}>
+                            <Turnstile
+                                ref={turnRef}
+                                siteKey={`${process.env.REACT_APP_SITE_KEY}`}
+                                onSuccess={(token) => setTokenTung(token)}
+                                style={{opacity: 0}}
+                                onError={(error) => console.error("Errores: ", error)}
+                            />
+                        </div>   
+
                             <div className='d-flex justify-content-center mt-4'>
                                 <Button type="submit" className='btn-verde-innovacion px-5 py-3 fs-5 fw-bold w-100 rounded-pill'>
                                     Iniciar Diagnóstico

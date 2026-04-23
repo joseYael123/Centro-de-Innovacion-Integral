@@ -7,7 +7,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Mail\MensajeSugerencia;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+
+
 class ContactoController extends Controller
+
+
 {
     /**
      * Display a listing of the resource.
@@ -24,8 +29,9 @@ class ContactoController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-        "correo_contacto" => "required|string|max:100",
+        try{
+         $validated = $request->validate([
+         "correo_contacto" => "required|string|max:100",
         "nombre_contacto" => "required|string|max:200",
         "apellidos_contacto" => "required|string|max:100" ,
         "sugerencia" => "required|string|max:1228",
@@ -43,6 +49,15 @@ class ContactoController extends Controller
             "msg" => "Sugerencia recibida correctamente",
             "Data" => $contacto_creado 
         ]);
+        }catch(\Exception $e){
+
+            Log::error('Error generando el contacto: ' . $e->getMessage());
+
+            return response()->json([
+                "msg" => "Errores al subir la peticion",
+                "Error" => $e->getMessage()
+            ]);
+        }
     }
 
     /**
@@ -60,11 +75,12 @@ class ContactoController extends Controller
      */
     public function update(Request $request, Contacto $contacto)
     {
+        try{
         $validated = $request->validate([
-        "correo_contacto" => "required|string|max:100",
-        "nombre_contacto" => "required|string|max:200",
-        "apellidos_contacto" => "required|string|max:100" ,
-        "sugerencia" => "required|string|max:1228",
+        "correo_contacto" => "sometimes|required|string|max:100",
+        "nombre_contacto" => "sometimes|required|string|max:200",
+        "apellidos_contacto" => "sometimes|required|string|max:100" ,
+        "sugerencia" => "sometimes|required|string|max:1228",
         ]);
 
         $contacto->update($validated);
@@ -73,6 +89,15 @@ class ContactoController extends Controller
             "msg" => "Sugerencia Actualizada correctamente",
             "Data Actualizada" => $contacto
         ]);
+        }catch(\Exception $e){
+
+            Log::error("Errores al guardar la update de el contacto", $e->getMessage());
+
+            return response()->json([
+                "msg" => "Errores en el run de el update",
+                "Error" => $e->getMessage()
+             ]);
+        }
     }
 
     /**

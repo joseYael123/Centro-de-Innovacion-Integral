@@ -46,7 +46,7 @@ function Blog() {
     useEffect(() => {
         const obtenerBlogs = async() => {
         try{
-            const obtener = await fetch("http://127.0.0.1:8000/api/blog",{
+            const obtener = await fetch("https://centrodeinnovacionintegral.com.mx/core/public/index.php/api/blog",{
                 headers:{ 
                     "Accept" : "application/json",
                     "Authorization" : `Bearer ${process.env.REACT_APP_TOKEN_API}`

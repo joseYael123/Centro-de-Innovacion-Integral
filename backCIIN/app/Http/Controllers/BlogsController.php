@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
 
 class BlogsController extends Controller
 {
@@ -45,8 +47,11 @@ class BlogsController extends Controller
             ],201);
 
         }catch(Exception $e){   
+
+            Log::error("Error al guardar el blog", $e->getMessage());
+
             printf("Errores en el run", $e);
-            return response() -> json(["msg" => "Errores en el run", "Error" => $e],500);
+            return response() -> json(["msg" => "Errores en el run", "Error" => $e->getMessage()],500);
         }
     }
 
@@ -67,12 +72,12 @@ class BlogsController extends Controller
     {
         try{
             $validated = $request->validate([
-            "titulo_blog" => "string|max:255", 
-            "fecha_publicacion" => "date",
-            "subtitulo" => "string|max:200",
-            "cont_blog" => "string|max:10000",
-            "img_blog_ruta" => "string|max:500",
-            "esDestacado" => "boolean|"
+            "titulo_blog" => "sometimes|string|max:255", 
+            "fecha_publicacion" => "sometimes|string",
+            "subtitulo" => "sometimes|string|max:200",
+            "cont_blog" => "sometimes|string|max:10000",
+            "img_blog_ruta" => "sometimes|string|max:500",
+            "esDestacado" => "sometimes|boolean"
             ]);
 
             $blog_actualizado = Blog::update($validated);
@@ -83,10 +88,12 @@ class BlogsController extends Controller
             ]);
 
         }catch(Exception $e){
-            prinf("Errores en el run: $e");
+        
+            Log::error("Error al Actualizar el blog", $e->getMessage());
+
             return response()->json([
                 "Msg" => "Errores en el run",
-                "Erorr" => $e
+                "Erorr" => $e->getMessage()
             ]);
         }
     }

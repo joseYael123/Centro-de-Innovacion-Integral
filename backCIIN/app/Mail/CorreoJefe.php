@@ -31,7 +31,6 @@ class CorreoJefe extends Mailable
     {
         return new Envelope(
             subject: 'Nuevo Diagniagnostico generado',
-            from: "ciin@gmail.com"
         );
     }
 

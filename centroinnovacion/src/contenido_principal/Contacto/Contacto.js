@@ -34,7 +34,7 @@ function Contacto() {
         }
 
         const sugerenciaSubida = 
-        await fetch("http://127.0.0.1:8000/api/contactos",{
+        await fetch("https://centrodeinnovacionintegral.com.mx/core/public/index.php/api/contactos",{
             method: "POST",
             headers: {"Accept" :  "application/json",
                     "Content-Type": "application/json",

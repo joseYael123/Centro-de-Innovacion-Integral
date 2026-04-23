@@ -8,7 +8,7 @@ use App\Http\Controllers\BlogsController;
 Route::middleware(['auth:sanctum'])->group(function(){
 
 Route::post("clientes", [ClienteController::class, 'store'])->
-middleware(['throttle:limitar-gemini']);
+middleware(['throttle:limitar-gemini'],['throttle:limite-global']);
 
 Route::apiResource("clientes", ClienteController::class)->except(['store']);
 

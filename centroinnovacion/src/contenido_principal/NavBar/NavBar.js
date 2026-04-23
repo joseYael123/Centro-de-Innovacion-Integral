@@ -17,10 +17,6 @@ function NavBar() {
         timer.current = setTimeout(() => setFocus(false), 300);
     };
 
-    const handleAnim = () =>{
-        
-    }
-
     const degradadoMarca = {
         background: "linear-gradient(to left, #0d8476, #72c8c1,#72c8c1,#f2f2f2)",
         width: "100%"

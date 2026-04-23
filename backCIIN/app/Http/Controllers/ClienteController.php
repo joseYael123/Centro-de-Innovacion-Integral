@@ -10,6 +10,7 @@ use App\Mail\CorreoDiagnostico;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CorreoJefe;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class ClienteController extends Controller
 {
@@ -39,8 +40,23 @@ class ClienteController extends Controller
         "tiempo_marca" => "required|string|max: 100",
         "area_problema" => "required|string|max: 150",
         "problematica" => "required|string|max:2000",
-        "resultados" => "required|string|max:2000"
+        "resultados" => "required|string|max:2000",
+        "turnstile_token" => "required|string"
         ]);
+
+        $cloudFlareResponse = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+            'secret' => env('SECRET_KEY'),
+            'response' => $request->turnstile_token,
+            'remoteip' => $request->ip()
+        ]);
+
+        if(!$cloudFlareResponse->json("success")){
+            return response() ->json([
+                'error' => 'No pudimos verificar tu conexión. Intenta de nuevo.',
+                'detalles' => $cloudFlareResponse->json()
+            ],403);
+        }
+
     try{
         $cliente_creado = Cliente::firstOrCreate(
             ["correo_cliente" => $request->correo_cliente,
@@ -48,15 +64,26 @@ class ClienteController extends Controller
             $validated 
         );
 
-        $diagnosticoIa = $gemini->peticionGemini(
-            $cliente_creado
-        );
+        $diagnosticoIa = null;
+        $exito = false;
+        $intentos = 0;
+        $max_intentos = 5;
 
-        if(is_array($diagnosticoIa)){
-            return response() ->json([
-                "msg" => "Error en la peticion a la ia",
+        while($intentos <= $max_intentos && !$exito){
+        $diagnosticoIa = $gemini->peticionGemini($cliente_creado);
+            if(is_array($diagnosticoIa)){
+                $intentos++;
+                sleep(2);        
+            } else {
+                $exito = true;
+            }
+        }
+
+        if(!$exito){
+            return response()->json([
+                "Msg" => "Error al general el diagnostico de la ia",
                 "Error" => $diagnosticoIa
-            ], 400);
+            ],503);
         }
 
         Mail::to($request->correo_cliente)
@@ -74,7 +101,11 @@ class ClienteController extends Controller
 
             Log::error('Error generando diagnóstico: ' . $e->getMessage());
 
-            return response()->json(["msg" => "Hubo un problema al general el diagnostico"], 500);
+            return response()->json(
+                ["msg" => "Hubo un problema al general el diagnostico",
+                "error_real" => $e->getMessage(),
+                "linea_del_error" => $e->getLine()],
+                 500);
         }
     }
 
@@ -91,22 +122,44 @@ class ClienteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cliente $cliente)
+   public function update(Request $request, Cliente $cliente)
     {
-        $validacion_basica = $request -> validate([
-        "nom_cliente" => "string|max:100",
-        "apellidos_cliente" => "string|max:100",
-        "correo_cliente" => "string|max:200" ,
-        "nom_empresa"  => "string|max:100",  
-        "peticion_cliente" => "string|max:4500"
-        ]);
+        try {
+            $validacion_basica = $request->validate([
+                "nom_cliente"       => "sometimes|required|string|max:100",
+                "apellidos_cliente" => "sometimes|required|string|max:100",
+                "correo_cliente"    => "sometimes|required|email:rfc,dns|max:255",
+                "nom_empresa"       => "sometimes|required|string|max:100",  
+                "rubro_empresa"     => "sometimes|required|string|max:150",
+                "tamanio_equipo"    => "sometimes|required|string|max:150",
+                "tiempo_marca"      => "sometimes|required|string|max:100",
+                "area_problema"     => "sometimes|required|string|max:150",
+                "problematica"      => "sometimes|required|string|max:2000",
+                "resultados"        => "sometimes|required|string|max:2000"
+            ]);
 
-        $cliente->update($validacion_basica);
+            $cliente->update($validacion_basica);
 
-        return response() -> json([
-            "msg" => "Cliente actualizado correctamente",
-            "Data" => $cliente
-        ]);
+            return response()->json([
+                "msg" => "Cliente actualizado correctamente",
+                "Data" => $cliente
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                "msg" => "Error en los datos enviados",
+                "errores" => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::error('Error actualizando cliente (ID: ' . $cliente->id . '): ' . $e->getMessage());
+
+            return response()->json([
+                "msg" => "Hubo un problema al actualizar el cliente",
+                "error_real" => $e->getMessage(), 
+                "linea_del_error" => $e->getLine()
+            ], 500);
+        }
     }
     
     /**

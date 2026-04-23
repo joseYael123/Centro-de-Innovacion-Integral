@@ -34,7 +34,6 @@ class CorreoDiagnostico extends Mailable
     {
         return new Envelope(
             subject: 'Correo Diagnostico De IA',
-            from: "centrodeinnovaciondigital@gmail.com.mx"
         );
     }
 
